@@ -1,0 +1,2 @@
+docker run --name backend_data wyaeld/postgres:data
+docker run -d -p 10.131.238.134::5432 --volumes-from backend_data wyaeld/postgres:9.3

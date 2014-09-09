@@ -15,7 +15,7 @@ coreos:
     public_ip: $public_ipv4
     # allow etcd to slow down at times
     etcd_request_timeout: 3
-    metadata: type=core
+    metadata: type=services
   update:
     reboot-strategy: best-effort
   units:

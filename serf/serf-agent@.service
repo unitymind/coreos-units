@@ -1,0 +1,23 @@
+[Unit]
+Description=serf-agent
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=-/bin/sh -c "docker kill serf-agent-%i"
+ExecStartPre=-/bin/sh -c "docker rm serf-agent-%i"
+ExecStartPre=/bin/sh -c "docker pull cleawing/serf"
+ExecStart=/bin/sh -c "docker run --name serf-agent-%i -p $COREOS_PRIVATE_IPV4:7946:7946 -p $COREOS_PRIVATE_IPV4:7373:7373 cleawing/serf"
+ExecStop=/bin/sh -c "docker stop serf-agent-%i"
+ExecStopPost=-/bin/sh -c "docker kill serf-agent-%i"
+ExecStopPost=-/bin/sh -c "docker rm serf-agent-%i"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+X-Conflicts=serf-agent@*.service
