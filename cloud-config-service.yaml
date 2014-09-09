@@ -1,0 +1,25 @@
+#cloud-config
+
+coreos:
+  etcd:
+    name: cleawing-service-<NODE_NUMBER>
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new
+    discovery: https://discovery.etcd.io/<token>
+    # multi-region deployments, multi-cloud deployments, and droplets without
+    # private networking need to use $public_ipv4
+    addr: $public_ipv4:4001
+    peer-addr: $public_ipv4:7001
+  fleet:
+    # We have to set the public_ip here so this works on Vagrant -- otherwise, Vagrant VMs
+    # will all publish the same private IP. This is harmless for cloud providers.
+    public_ip: $public_ipv4
+    # allow etcd to slow down at times
+    etcd_request_timeout: 3
+    metadata: type=core
+  update:
+    reboot-strategy: best-effort
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
